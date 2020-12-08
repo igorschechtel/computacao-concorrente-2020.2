@@ -30,7 +30,9 @@ int main() {
   int array[ARRAY_SIZE], i, thread;
   for(i = 0; i < ARRAY_SIZE; i++) {
     array[i] = 0; //inicializa elementos com zero
+    printf("%d ", array[i]);
   }
+  printf("\n");
 
   t_Args *arg; //receberá os argumentos para a thread
 
