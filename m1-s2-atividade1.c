@@ -1,5 +1,7 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include "timer.h"
 
 float *mat; // matriz de entrada
 float *vet; // vetor de entrada
@@ -14,7 +16,7 @@ typedef struct {
 // função que as threads executarão
 void *tarefa (void *arg) {
   tArgs *args = (tArgs*) arg;
-  printf("Thread %d\n", args->id);
+  // printf("Thread %d\n", args->id);
   for (int i = (args->id); i < (args->dim); i += nthreads) {
     for (int j = 0; j < (args->dim); j++) {
       saida[i] += mat[i*(args->dim) + j] * vet[j];
@@ -27,7 +29,9 @@ int main(int argc, char* argv[]) {
   int dim; // dimensão da matriz de entrada
   pthread_t *tid; // identificadores das threads no sistema
   tArgs *args; // identificadores locais das threads e dimensão
+  double inicio, fim, delta;
 
+  GET_TIME(inicio);
   // leitura e avaliação dos parâmetros de entrada
   if(argc < 3) {
     printf("Digite: %s <dimensao da matriz> <numero de threads>\n", argv[0]);
@@ -64,7 +68,11 @@ int main(int argc, char* argv[]) {
     vet[i] = 1;
     saida[i] = 0;
   }
+  GET_TIME(fim);
+  delta = fim - inicio;
+  // printf("Tempo inicialização: %lf\n", delta);
 
+  GET_TIME(inicio);
   /* -------------------------------
   multiplicação da matriz pelo vetor
   ------------------------------- */
@@ -95,6 +103,9 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i < nthreads; i++) {
     pthread_join(*(tid+i), NULL);
   }
+  GET_TIME(fim);
+  delta = fim - inicio;
+  printf("Tempo multiplicação: %lf\n", delta);
 
 
   // exibição dos resultados
@@ -111,19 +122,23 @@ int main(int argc, char* argv[]) {
     printf("%.1f ", vet[j]);
   }
   puts("");
-  */
   puts("Vetor de saída:");
   for (int j = 0; j < dim; j++) {
     printf("%.1f ", saida[j]);
   }
   puts("");
+  */
 
   // liberação da memória
+  GET_TIME(inicio);
   free(mat);
   free(vet);
   free(saida);
   free(args);
   free(tid);
+  GET_TIME(fim);
+  delta = fim - inicio;
+  // printf("Tempo finalização: %lf\n", delta);
 
   return 0;
 }
