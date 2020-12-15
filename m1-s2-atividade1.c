@@ -17,7 +17,7 @@ void *tarefa (void *arg) {
   printf("Thread %d\n", args->id);
   for (int i = (args->id); i < (args->dim); i += nthreads) {
     for (int j = 0; j < (args->dim); j++) {
-      saida[args->id] += mat[i*(args->dim) + j] * vet[j];
+      saida[i] += mat[i*(args->dim) + j] * vet[j];
     }
   }
   pthread_exit(NULL);
@@ -35,6 +35,7 @@ int main(int argc, char* argv[]) {
   }
   dim = atoi(argv[1]);
   nthreads = atoi(argv[2]);
+  if (nthreads > dim) nthreads = dim;
 
   // alocação de memória para as estruturas de dados
   mat = (float*) malloc(sizeof(float) * dim * dim);
