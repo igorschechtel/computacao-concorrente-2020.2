@@ -77,8 +77,9 @@ int main(int argc, char* argv[]) {
 
   // criação das threads
   for (int i = 0; i < dim; i++) {
-    (args + i)->id = 1;
-    if(pthread_create(tid + i, NULL, tarefa, (void*))) {
+    (args + i)->id = i;
+    (args + i)->dim = dim;
+    if(pthread_create(tid + i, NULL, tarefa, (void*) (args + i))) {
       puts("ERRO--pthread_create\n");
       return 3;
     }
