@@ -3,7 +3,7 @@
 #include <pthread.h>
 
 #define NTHREADS 2 //total de threads a serem criadas
-#define ARRAY_SIZE 100 //tamanho do array
+#define ARRAY_SIZE 10000 //tamanho do array
 
 //cria a estrutura de dados para armazenar os argumentos da thread
 typedef struct {
