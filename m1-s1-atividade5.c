@@ -30,9 +30,7 @@ int main() {
   int array[ARRAY_SIZE], i, thread;
   for(i = 0; i < ARRAY_SIZE; i++) {
     array[i] = 0; //inicializa elementos com zero
-    printf("%d ", array[i]);
   }
-  printf("\n");
 
   t_Args *arg; //receberá os argumentos para a thread
 
@@ -59,10 +57,19 @@ int main() {
   }
 
   // printa array incrementado
+  int resultIsCorrect = 1;
   for(i = 0; i < ARRAY_SIZE; i++) {
-    printf("%d ", array[i]);
+    if(array[i] != 1) {
+      resultIsCorrect = 0;
+      break;
+    }
   }
-  printf("\n");
+
+  if(resultIsCorrect){
+    printf("Resultado correto!\n");
+  } else {
+    printf("Resultado incorreto!\n");
+  }
 
   printf("--Thread principal terminou\n");
   pthread_exit(NULL);
