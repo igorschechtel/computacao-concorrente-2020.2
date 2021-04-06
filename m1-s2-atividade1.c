@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
 
   GET_TIME(inicio);
   /* -------------------------------
-  multiplicação da matriz pelo vetor
+  multiplicação das matrizes
   ------------------------------- */
 
   // alocação das estruturas
