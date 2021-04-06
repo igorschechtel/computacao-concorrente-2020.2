@@ -3,9 +3,9 @@
 #include <pthread.h>
 #include "timer.h"
 
-float *mat; // matriz de entrada
-float *vet; // vetor de entrada
-float *saida; // vetor de saída
+float *matriz1; // matriz de entrada 1
+float *matriz2; // matriz de entrada 2
+float *saida; // matriz de saída
 int nthreads; // número de threads
 
 typedef struct {
@@ -19,7 +19,11 @@ void *tarefa (void *arg) {
   // printf("Thread %d\n", args->id);
   for (int i = (args->id); i < (args->dim); i += nthreads) {
     for (int j = 0; j < (args->dim); j++) {
-      saida[i] += mat[i*(args->dim) + j] * vet[j];
+      int soma = 0;
+      for (int k = 0; k < (args->dim); k++) {
+        soma += matriz1[i*(args->dim) + k] * matriz2[k*(args->dim) + j];
+      }
+      saida[i*(args->dim) + j] = soma;
     }
   }
   pthread_exit(NULL);
@@ -42,19 +46,19 @@ int main(int argc, char* argv[]) {
   if (nthreads > dim) nthreads = dim;
 
   // alocação de memória para as estruturas de dados
-  mat = (float*) malloc(sizeof(float) * dim * dim);
-  if (mat == NULL) {
+  matriz1 = (float*) malloc(sizeof(float) * dim * dim);
+  if (matriz1 == NULL) {
     printf("ERRO--malloc\n");
     return 2;
   }
   
-  vet = (float*) malloc(sizeof(float) * dim);
-  if (vet == NULL) {
+  matriz2 = (float*) malloc(sizeof(float) * dim * dim);
+  if (matriz2 == NULL) {
     printf("ERRO--malloc\n");
     return 2;
   }
 
-  saida = (float*) malloc(sizeof(float) * dim);
+  saida = (float*) malloc(sizeof(float) * dim * dim);
   if (saida == NULL) {
     printf("ERRO--malloc\n");
     return 2;
@@ -63,14 +67,14 @@ int main(int argc, char* argv[]) {
   // inicialização das estruturas de dados
   for (int i = 0; i < dim; i++) {
     for (int j = 0; j < dim; j++) {
-      mat[i*dim + j] = 1;
+      matriz1[i*dim + j] = 1;
+      matriz2[i*dim + j] = 2;
+      saida[i*dim + j] = 0;
     }
-    vet[i] = 1;
-    saida[i] = 0;
   }
   GET_TIME(fim);
   delta = fim - inicio;
-  // printf("Tempo inicialização: %lf\n", delta);
+  printf("Tempo inicialização: %lf\n", delta);
 
   GET_TIME(inicio);
   /* -------------------------------
@@ -109,36 +113,41 @@ int main(int argc, char* argv[]) {
 
 
   // exibição dos resultados
-  /*
-  puts("Matriz de entrada:");
-  for (int i = 0; i < dim; i++) {
-    for (int j = 0; j < dim; j++) {
-      printf("%.1f ", mat[i*dim + j]);
-    }
-    puts("");
-  }
-  puts("Vetor de entrada:");
-  for (int j = 0; j < dim; j++) {
-    printf("%.1f ", vet[j]);
-  }
-  puts("");
-  puts("Vetor de saída:");
-  for (int j = 0; j < dim; j++) {
-    printf("%.1f ", saida[j]);
-  }
-  puts("");
-  */
+  
+  // puts("Matriz de entrada 1");
+  // for (int i = 0; i < dim; i++) {
+  //   for (int j = 0; j < dim; j++) {
+  //     printf("%.1f ", matriz1[i*dim + j]);
+  //   }
+  //   puts("");
+  // }
+  // puts("Matriz de entrada 2");
+  // for (int i = 0; i < dim; i++) {
+  //   for (int j = 0; j < dim; j++) {
+  //     printf("%.1f ", matriz2[i*dim + j]);
+  //   }
+  //   puts("");
+  // }
+  // puts("");
+  // puts("Matriz resultado:");
+  // for (int i = 0; i < dim; i++) {
+  //   for (int j = 0; j < dim; j++) {
+  //     printf("%.1f ", saida[i*dim + j]);
+  //   }
+  //   puts("");
+  // }
+  // puts("");
 
   // liberação da memória
   GET_TIME(inicio);
-  free(mat);
-  free(vet);
+  free(matriz1);
+  free(matriz2);
   free(saida);
   free(args);
   free(tid);
   GET_TIME(fim);
   delta = fim - inicio;
-  // printf("Tempo finalização: %lf\n", delta);
+  printf("Tempo finalização: %lf\n", delta);
 
   return 0;
 }
